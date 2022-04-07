@@ -1,0 +1,2 @@
+# aws_vpc_terraform
+AWSのVPCを作成するためのTerraformモジュールコードです
