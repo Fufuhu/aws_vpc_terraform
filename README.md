@@ -1,6 +1,10 @@
 # aws_vpc_terraform
 AWSのVPCを作成するためのTerraformモジュールコードです
 
+## 作成されるリソースなど
+
+[module_doc.md](./modules/vpc/module_doc.md)を参照してください。
+
 ## 使い方
 
 現時点ではTerraform Registryで公開はしていないので、
