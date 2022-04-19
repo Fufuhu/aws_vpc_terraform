@@ -4,12 +4,17 @@
 # }
 
 locals {
-  from_az_to_public_subnet_id = { for cidr in keys(aws_subnet.public_subnets) : aws_subnet.public_subnets[cidr].tags["AvailabilityZone"] => aws_subnet.public_subnets[cidr].id }
+  # var.nat_gateway_redundancy_enabled がtrueだったらNAT Gatewayを3AZ分散、
+  # falseだったらNAT Gatewayを単一AZに存在するよう修正
+  from_az_to_public_subnet_id = var.nat_gateway_redundancy_enabled ? {
+    for cidr in keys(aws_subnet.public_subnets) : aws_subnet.public_subnets[cidr].tags["AvailabilityZone"] => aws_subnet.public_subnets[cidr].id
+  } : {
+    for cidr in [keys(aws_subnet.public_subnets)[0]] : aws_subnet.public_subnets[cidr].tags["AvailabilityZone"] => aws_subnet.public_subnets[cidr].id
+  }
 }
 
 resource "aws_eip" "eips" {
   for_each = local.from_az_to_public_subnet_id
-  # for_each = toset(local.nat_gateway_availability_zones)
   vpc = true
 
   tags = {
