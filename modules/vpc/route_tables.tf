@@ -39,6 +39,10 @@ resource "aws_route_table" "private_route_tables" {
 }
 
 locals {
+  /*
+    NATゲートウェイの冗長化が有効化されていない場合に、
+    単一AZに作成されたNATゲートウェイIDを取得する。
+  */
   nat_gateway_id_in_case_of_redundancy_disabled = aws_nat_gateway.nat_gateways[keys(aws_nat_gateway.nat_gateways)[0]].id
 }
 
@@ -48,6 +52,11 @@ resource "aws_route" "private_default_route" {
   route_table_id = aws_route_table.private_route_tables[each.key].id
 
   destination_cidr_block = "0.0.0.0/0"
+  /*
+    NATゲートウェイの冗長化を有効にしている場合は、
+    AZごとに作成されたNATゲートウェイをデフォルトルートとする。
+    そうでない場合は、特定のNATゲートウェイを指定する。
+  */
   nat_gateway_id = var.nat_gateway_redundancy_enabled ? aws_nat_gateway.nat_gateways[each.value.availability_zone].id : local.nat_gateway_id_in_case_of_redundancy_disabled
 }
 
