@@ -38,13 +38,17 @@ resource "aws_route_table" "private_route_tables" {
   }
 }
 
+locals {
+  nat_gateway_id_in_case_of_redunduncy_disabled = aws_nat_gateway.nat_gateways[keys(aws_nat_gateway.nat_gateways)[0]].id
+}
+
 # プライベートサブネット用のデフォルトルート設定
 resource "aws_route" "private_default_route" {
   for_each = aws_subnet.private_subnets
   route_table_id = aws_route_table.private_route_tables[each.key].id
 
   destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id = aws_nat_gateway.nat_gateways[each.value.availability_zone].id
+  nat_gateway_id = var.nat_gateway_redundancy_enabled ? aws_nat_gateway.nat_gateways[each.value.availability_zone].id : local.nat_gateway_id_in_case_of_redunduncy_disabled
 }
 
 # プライベートサブネットとプライベートサブネット用のルートテーブルのヒモ付

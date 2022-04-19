@@ -89,8 +89,8 @@ variable "igw_additional_tags" {
   }
 }
 
-# variable "nat_gateway_redundancy_enabled" {
-#   description = "NATゲートウェイの冗長性の有効化"
-#   type = bool
-#   default = true
-# }
+variable "nat_gateway_redundancy_enabled" {
+  description = "NATゲートウェイの冗長性の有効化"
+  type = bool
+  default = true
+}
