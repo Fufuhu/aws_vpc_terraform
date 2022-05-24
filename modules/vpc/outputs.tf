@@ -11,12 +11,12 @@ output "vpc_name" {
 
 output "public_subnets" {
   description  = "パブリックサブネットの情報です"
-  value = {for subnet in aws_subnet.public_subnets : subnet.availability_zone => merge({ id = subnet.id }, subnet.tags)}
+  value = {for subnet in aws_subnet.public_subnets : subnet.availability_zone => merge(subnet.tags, {id = subnet.id })}
 }
 
 output "private_subnets" {
   description = "プライベートサブネットの情報です"
-  value = {for subnet in aws_subnet.private_subnets : subnet.availability_zone => merge({ id = subnet.id }, subnet.tags) }
+  value = {for subnet in aws_subnet.private_subnets : subnet.availability_zone => merge(subnet.tags, {id = subnet.id })}
 }
 
 output "public_route_tables" {
