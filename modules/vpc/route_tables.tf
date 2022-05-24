@@ -33,6 +33,7 @@ resource "aws_route_table" "private_route_tables" {
 
   tags = {
     Name = "${var.service_name}-${var.env}-${each.value.availability_zone}-private-route-table"
+    ServiceName = var.service_name
     AvailabilityZone = each.value.availability_zone
     Scope = "private"
   }

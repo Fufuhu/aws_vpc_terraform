@@ -12,6 +12,7 @@ resource "aws_subnet" "public_subnets" {
     var.subnet_additional_tags,
     {
       Name = "${var.service_name}-${var.env}-${data.aws_availability_zones.availability_zones.names[index(var.subnet_cidrs.public, each.key) % local.number_of_availability_zones]}-public-subnet"
+      ServiceName = var.service_name
       Env = var.env
       Scope = "public"
       AvailabilityZone = data.aws_availability_zones.availability_zones.names[index(var.subnet_cidrs.public, each.key) % local.number_of_availability_zones]
@@ -31,6 +32,7 @@ resource "aws_subnet" "private_subnets" {
   var.subnet_additional_tags,
     {
       Name = "${var.service_name}-${var.env}-${data.aws_availability_zones.availability_zones.names[index(var.subnet_cidrs.private, each.key) % local.number_of_availability_zones]}-private-subnet"
+      ServiceName = var.service_name
       Env = var.env
       Scope = "private"
       AvailabilityZone = data.aws_availability_zones.availability_zones.names[index(var.subnet_cidrs.private, each.key) % local.number_of_availability_zones]

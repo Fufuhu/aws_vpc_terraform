@@ -6,6 +6,7 @@ locals {
   {
     Name = "${var.service_name}-${var.env}-vpc"
     Env  = var.env
+    ServiceName = var.service_name
   }
   )
 }
