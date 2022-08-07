@@ -102,9 +102,12 @@ variable "nat_gateway_redundancy_enabled" {
 }
 
 locals {
-  default_resource_tags = {
+  default_resource_tags = var.service_suffix == "" ? {
     ServiceName   = var.service_name
-    ServiceSuffix = var.service_suffix == "" ? null : var.service_suffix
+    Env           = var.env
+  } : {
+    ServiceName   = var.service_name
+    ServiceSuffix = var.service_suffix
     Env           = var.env
   }
 }
