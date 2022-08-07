@@ -104,6 +104,8 @@ variable "nat_gateway_redundancy_enabled" {
 }
 
 locals {
+  vpc_name = var.service_suffix == "" ? "${var.service_name}-${var.env}-vpc" : "${var.service_name}-${var.service_suffix}-${var.env}-vpc"
+
   default_resource_tags = var.service_suffix == "" ? {
     ServiceName = var.service_name
     Env         = var.env
@@ -112,4 +114,17 @@ locals {
     ServiceSuffix = var.service_suffix
     Env           = var.env
   }
+
+  vpc_tags = merge(
+    var.vpc_additional_tags,
+    local.default_resource_tags,
+    {
+      Name = local.vpc_name
+    }
+  )
+
+  subnet_base_tags = merge(
+    var.subnet_additional_tags,
+    local.default_resource_tags,
+  )
 }
