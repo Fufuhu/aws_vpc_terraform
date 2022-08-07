@@ -4,7 +4,7 @@ locals {
   from_az_to_public_subnet_id = var.nat_gateway_redundancy_enabled ? {
     for cidr in keys(aws_subnet.public_subnets) : aws_subnet.public_subnets[cidr].tags["AvailabilityZone"] => aws_subnet.public_subnets[cidr].id
   } : {
-    "${keys(aws_subnet.public_subnets)[0]}" = aws_subnet.public_subnets[keys(aws_subnet.public_subnets)[0]].id
+    "${aws_subnet.public_subnets[keys(aws_subnet.public_subnets)[0]].tags["AvailabilityZones"]}" = aws_subnet.public_subnets[keys(aws_subnet.public_subnets)[0]].id
   }
 }
 
