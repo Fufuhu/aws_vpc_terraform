@@ -1,42 +1,46 @@
+locals {
+}
+
+
 # パブリックサブネット用のルートテーブル
 resource "aws_route_table" "public_route_tables" {
   for_each = aws_subnet.public_subnets
-  vpc_id = aws_vpc.vpc.id
+  vpc_id   = aws_vpc.vpc.id
 
-  tags = {
-    Name = "${var.service_name}-${var.env}-${each.value.availability_zone}-public-route-table"
+  tags = merge({
+    Name             = "${var.service_name}-${var.env}-${each.value.availability_zone}-public-route-table"
     AvailabilityZone = each.value.availability_zone
-    Scope = "public"
-  }
+    Scope            = "public"
+  }, local.default_resource_tags)
 }
 
 # パブリックサブネットのデフォルトルート
 resource "aws_route" "public_default_route" {
-  for_each = aws_subnet.public_subnets
+  for_each       = aws_subnet.public_subnets
   route_table_id = aws_route_table.public_route_tables[each.key].id
 
   destination_cidr_block = "0.0.0.0/0"
-  gateway_id = aws_internet_gateway.igw.id
+  gateway_id             = aws_internet_gateway.igw.id
 }
 
 # パブリックサブネットとパブリックサブネット用のルートテーブルのヒモ付
 resource "aws_route_table_association" "public_route_table_associations" {
-  for_each = aws_subnet.public_subnets
+  for_each       = aws_subnet.public_subnets
   route_table_id = aws_route_table.public_route_tables[each.key].id
-  subnet_id = each.value.id
+  subnet_id      = each.value.id
 }
 
 # プライベートサブネット用のルートテーブル
 resource "aws_route_table" "private_route_tables" {
   for_each = aws_subnet.private_subnets
-  vpc_id = aws_vpc.vpc.id
+  vpc_id   = aws_vpc.vpc.id
 
-  tags = {
-    Name = "${var.service_name}-${var.env}-${each.value.availability_zone}-private-route-table"
-    ServiceName = var.service_name
+
+  tags = merge({
+    Name             = "${var.service_name}-${var.env}-${each.value.availability_zone}-private-route-table"
     AvailabilityZone = each.value.availability_zone
-    Scope = "private"
-  }
+    Scope            = "private"
+  }, local.default_resource_tags)
 }
 
 locals {
@@ -49,21 +53,16 @@ locals {
 
 # プライベートサブネット用のデフォルトルート設定
 resource "aws_route" "private_default_route" {
-  for_each = aws_subnet.private_subnets
+  for_each       = aws_subnet.private_subnets
   route_table_id = aws_route_table.private_route_tables[each.key].id
 
   destination_cidr_block = "0.0.0.0/0"
-  /*
-    NATゲートウェイの冗長化を有効にしている場合は、
-    AZごとに作成されたNATゲートウェイをデフォルトルートとする。
-    そうでない場合は、特定のNATゲートウェイを指定する。
-  */
-  nat_gateway_id = var.nat_gateway_redundancy_enabled ? aws_nat_gateway.nat_gateways[each.value.availability_zone].id : local.nat_gateway_id_in_case_of_redundancy_disabled
+  nat_gateway_id         = aws_nat_gateway.nat_gateways[each.value.availability_zone].id
 }
 
 # プライベートサブネットとプライベートサブネット用のルートテーブルのヒモ付
 resource "aws_route_table_association" "private_route_table_associations" {
-  for_each = aws_subnet.private_subnets
+  for_each       = aws_subnet.private_subnets
   route_table_id = aws_route_table.private_route_tables[each.key].id
-  subnet_id = each.value.id
+  subnet_id      = each.value.id
 }
