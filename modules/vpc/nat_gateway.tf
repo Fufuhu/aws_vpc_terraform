@@ -1,9 +1,3 @@
-# locals {
-#   nat_gateway_availability_zones = var.nat_gateway_redundancy_enabled ? data.aws_availability_zones.availability_zones.names : [
-#     data.aws_availability_zones.availability_zones.names[0]
-#   ]
-# }
-
 locals {
   # var.nat_gateway_redundancy_enabled がtrueだったらNAT Gatewayを3AZ分散、
   # falseだったらNAT Gatewayを単一AZに存在するよう修正
@@ -16,7 +10,6 @@ locals {
 
 resource "aws_eip" "eips" {
   for_each = local.from_az_to_public_subnet_id
-  # for_each = toset(local.nat_gateway_availability_zones)
   vpc      = true
 
   tags = merge(
