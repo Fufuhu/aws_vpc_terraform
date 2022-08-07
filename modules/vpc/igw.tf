@@ -3,8 +3,8 @@ resource "aws_internet_gateway" "igw" {
   tags   = merge(
     var.igw_additional_tags,
     {
-      Name          = "${var.service_name}-${var.env}-igw"
-      VpcId         = aws_vpc.vpc.id
+      Name  = "${var.service_name}-${var.env}-igw"
+      VpcId = aws_vpc.vpc.id
     },
     local.default_resource_tags
   )

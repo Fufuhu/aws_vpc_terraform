@@ -80,7 +80,9 @@ variable "subnet_additional_tags" {
   type        = map(string)
   default     = {}
   validation {
-    condition     = length(setintersection(keys(var.subnet_additional_tags), ["Name", "Env", "AvailabilityZone", "Scope", "ServiceName"])) == 0
+    condition     = length(setintersection(keys(var.subnet_additional_tags), [
+      "Name", "Env", "AvailabilityZone", "Scope", "ServiceName"
+    ])) == 0
     error_message = "Key names, Name and Env, AvailabilityZone, Scope, ServiceName are reserved. Not allowed to use them."
   }
 }
@@ -103,8 +105,8 @@ variable "nat_gateway_redundancy_enabled" {
 
 locals {
   default_resource_tags = var.service_suffix == "" ? {
-    ServiceName   = var.service_name
-    Env           = var.env
+    ServiceName = var.service_name
+    Env         = var.env
   } : {
     ServiceName   = var.service_name
     ServiceSuffix = var.service_suffix

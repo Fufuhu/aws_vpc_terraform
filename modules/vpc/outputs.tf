@@ -32,5 +32,5 @@ output "private_route_tables" {
 
 output "default_resource_tags" {
   description = "各種リソースに付与されているデフォルトのタグです"
-  value = local.default_resource_tags
+  value       = local.default_resource_tags
 }
