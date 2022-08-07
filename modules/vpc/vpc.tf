@@ -1,12 +1,12 @@
-
 locals {
   vpc_tags = merge(
-  var.vpc_additional_tags
-  ,
-  {
-    Name = "${var.service_name}-${var.env}-vpc"
-    Env  = var.env
-  }
+    var.vpc_additional_tags,
+    {
+      Name          = "${var.service_name}-${var.env}-vpc"
+      ServiceName   = var.service_name
+      ServiceSuffix = var.service_suffix
+      Env           = var.env
+    }
   )
 }
 
