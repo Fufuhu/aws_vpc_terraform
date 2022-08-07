@@ -57,7 +57,7 @@ resource "aws_route" "private_default_route" {
   route_table_id = aws_route_table.private_route_tables[each.key].id
 
   destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id         = aws_nat_gateway.nat_gateways[each.value.availability_zone].id
+  nat_gateway_id         = var.nat_gateway_redundancy_enabled ? aws_nat_gateway.nat_gateways[each.value.availability_zone].id : aws_nat_gateway.nat_gateways[keys(aws_nat_gateway.nat_gateways)[0]].id
 }
 
 # プライベートサブネットとプライベートサブネット用のルートテーブルのヒモ付
