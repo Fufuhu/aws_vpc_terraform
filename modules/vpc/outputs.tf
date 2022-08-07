@@ -28,3 +28,9 @@ output "private_route_tables" {
   description = "プライベートサブネットのルートテーブル情報です"
   value       = {for route_table in aws_route_table.private_route_tables : route_table.tags["AvailabilityZone"] => route_table.id}
 }
+
+
+output "default_resource_tags" {
+  description = "各種リソースに付与されているデフォルトのタグです"
+  value = local.default_resource_tags
+}
