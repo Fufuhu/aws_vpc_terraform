@@ -29,8 +29,8 @@ variable "vpc_additional_tags" {
   type        = map(string)
   default     = {}
   validation {
-    condition     = length(setintersection(keys(var.vpc_additional_tags), ["Name", "Env"])) == 0
-    error_message = "Key names, Name and Env is reserved. Not allowed to use them."
+    condition     = length(setintersection(keys(var.vpc_additional_tags), ["Name", "Env", "ServiceName"])) == 0
+    error_message = "Key names, Name and Env, ServiceName is reserved. Not allowed to use them."
   }
 }
 
@@ -80,10 +80,8 @@ variable "subnet_additional_tags" {
   type        = map(string)
   default     = {}
   validation {
-    condition = length(setintersection(keys(var.subnet_additional_tags), [
-      "Name", "Env", "AvailabilityZone", "Scope"
-    ])) == 0
-    error_message = "Key names, Name and Env, AvailabilityZone, Scope are reserved. Not allowed to use them."
+    condition     = length(setintersection(keys(var.subnet_additional_tags), ["Name", "Env", "AvailabilityZone", "Scope", "ServiceName"])) == 0
+    error_message = "Key names, Name and Env, AvailabilityZone, Scope, ServiceName are reserved. Not allowed to use them."
   }
 }
 
@@ -92,8 +90,8 @@ variable "igw_additional_tags" {
   type        = map(string)
   default     = {}
   validation {
-    condition     = length(setintersection(keys(var.igw_additional_tags), ["Name", "Env", "VpcId"])) == 0
-    error_message = "Key names, Name and Env, VpcId are reserved. Not allowed to use them."
+    condition     = length(setintersection(keys(var.igw_additional_tags), ["Name", "Env", "VpcId", "ServiceName"])) == 0
+    error_message = "Key names, Name and Env, VpcId, ServiceName are reserved. Not allowed to use them."
   }
 }
 

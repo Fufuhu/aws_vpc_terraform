@@ -35,11 +35,20 @@ resource "aws_route_table" "private_route_tables" {
   for_each = aws_subnet.private_subnets
   vpc_id   = aws_vpc.vpc.id
 
+
   tags = merge({
     Name             = "${var.service_name}-${var.env}-${each.value.availability_zone}-private-route-table"
     AvailabilityZone = each.value.availability_zone
     Scope            = "private"
   }, local.default_resource_tags)
+}
+
+locals {
+  /*
+    NATゲートウェイの冗長化が有効化されていない場合に、
+    単一AZに作成されたNATゲートウェイIDを取得する。
+  */
+  nat_gateway_id_in_case_of_redundancy_disabled = aws_nat_gateway.nat_gateways[keys(aws_nat_gateway.nat_gateways)[0]].id
 }
 
 # プライベートサブネット用のデフォルトルート設定
